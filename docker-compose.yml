@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: .
+    container_name: hw-7-backend
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    volumes:
+      - back_static:/app/back_static
+      - back_media:/app/back_media
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: hw-7-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - back_static:/app/back_static:ro
+      - back_media:/app/back_media:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  back_static:
+  back_media:
